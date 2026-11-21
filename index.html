@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GenAI Content Transformer</title>
+	<link rel="stylesheet" href="style.css?v=21">
+</head>
+<body>
+<main class="container">
+	<section id="loginPanel" class="panel">
+		<h1>Welcome back</h1>
+		<p>Sign in to use the GenAI Content Transformer</p>
+		<form id="loginForm" method="post" action="/api/login">
+			<label for="username">Username</label>
+			<input id="username" name="username" autocomplete="username" required>
+			<label for="password">Password</label>
+			<input id="password" name="password" type="password" maxlength="8" autocomplete="current-password" required>
+			<button type="submit">Sign in</button>
+		</form>
+		<p id="loginMessage" class="message" role="alert"></p>
+	</section>
+
+	<section id="appPanel" class="app-shell" hidden>
+		<aside class="sidebar">
+			<div class="brand"><span class="brand-mark">G</span><span>Gen AI</span></div>
+			<p class="nav-caption">WORKSPACE</p>
+			<button class="nav-item active" type="button" data-view="dashboardView">Dashboard</button>
+			<button class="nav-item" type="button" data-view="transformerView">Transform</button>
+			<button class="nav-item" type="button" data-view="aiAgentView">AI Agent</button>
+			<button class="nav-item" type="button" data-view="analyticsView">Analytics</button>
+			<button class="nav-item" type="button" data-view="historyView">Transformation History</button>
+			<button id="sidebarManageUsers" class="nav-item" type="button" hidden>Manage User</button>
+			<div class="sidebar-footer"><span class="status-dot"></span> AI service ready</div>
+		</aside>
+		<div class="app-main">
+		<header class="topbar">
+			<div><span class="breadcrumb">Workspace</span><span class="breadcrumb-separator">/</span><strong id="pageTitle">Dashboard</strong></div>
+			<div class="account"><span id="accountLabel"></span><button id="manageUsersButton" class="secondary" type="button" hidden>Manage User</button><button id="logoutButton" class="secondary" type="button">Sign out</button></div>
+		</header>
+		<div class="app-content">
+		<section id="dashboardView" class="view-panel">
+	<div class="view-heading dashboard-heading"><div><h1>Dashboard</h1><p>Your AI content transformation activity at a glance.</p></div><label class="dashboard-date-filter"><span>Period</span><select id="dashboardDateRange" aria-label="Dashboard date range"><option value="30" selected>Last 30 Days</option><option value="7">Last 7 Days</option><option value="90">Last 90 Days</option><option value="all">All Time</option></select></label></div>
+	<section class="dashboard-hero"><div class="dashboard-hero-copy"><div class="hero-brand"><span aria-hidden="true">✦</span><div><strong>Gen AI Content Assistant</strong><small>Create, transform, translate and optimize your content with AI.</small></div></div><div class="dashboard-create-row"><textarea id="dashboardPrompt" rows="1" placeholder="Describe what you want to create... (e.g. Create a LinkedIn post about Gen AI trends)" aria-label="Describe content to create"></textarea><button id="dashboardGenerateButton" type="button"><span aria-hidden="true">✦</span> Generate</button></div></div><div class="hero-art" aria-hidden="true"><div class="hero-document"><i></i><i></i><i></i><b></b></div><div class="hero-image">▧</div><div class="hero-ai">AI</div><div class="hero-play">▶</div></div></section>
+	<div class="stats-grid">
+		<article class="stat-card stat-blue metric-card" role="button" tabindex="0" data-metric="total" aria-label="View total transformations"><div class="stat-card-top"><span class="stat-icon">▤</span><span id="trendTotal" class="stat-trend">0%</span></div><strong id="statTotal">0</strong><span class="stat-label">Total Transformations</span><span class="stat-foot">All-time activities</span></article>
+		<article class="stat-card stat-teal metric-card" role="button" tabindex="0" data-metric="successful" aria-label="View successful outputs"><div class="stat-card-top"><span class="stat-icon">✓</span><span id="trendSuccessful" class="stat-trend">0%</span></div><strong id="statApproved">0</strong><span class="stat-label">Successful Outputs</span><span class="stat-foot">Completed tasks</span></article>
+		<article class="stat-card stat-amber metric-card" role="button" tabindex="0" data-metric="translations" aria-label="View translations"><div class="stat-card-top"><span class="stat-icon">文</span><span id="trendTranslations" class="stat-trend">0%</span></div><strong id="statTranslations">0</strong><span class="stat-label">Translations</span><span class="stat-foot">Multilingual content</span></article>
+		<article class="stat-card stat-coral metric-card" role="button" tabindex="0" data-metric="downloads" aria-label="View downloads"><div class="stat-card-top"><span class="stat-icon">↓</span><span class="stat-trend neutral">— 0%</span></div><strong id="statDownloads">0</strong><span class="stat-label">Downloads</span><span class="stat-foot">Exported content</span></article>
+		<article class="stat-card stat-purple metric-card" role="button" tabindex="0" data-metric="saved" aria-label="View estimated time saved"><div class="stat-card-top"><span class="stat-icon">◷</span><span id="trendSaved" class="stat-trend">0%</span></div><strong id="statTimeSaved">0 min</strong><span class="stat-label">Time Saved</span><span class="stat-foot">Estimated productivity</span></article>
+		<article class="stat-card stat-aqua metric-card" role="button" tabindex="0" data-metric="users" aria-label="View active users"><div class="stat-card-top"><span class="stat-icon">♙</span><span class="stat-trend neutral">—</span></div><strong id="statActiveUsers">1</strong><span class="stat-label">Active Users</span><span class="stat-foot">Workspace activity</span></article>
+	</div>
+	<div id="metricModal" class="metric-modal" role="dialog" aria-modal="true" aria-labelledby="metricModalTitle" hidden><section class="metric-modal-card"><div class="metric-modal-heading"><div><h2 id="metricModalTitle">Metric details</h2><p id="metricModalSummary"></p></div><button id="closeMetricModal" type="button" aria-label="Close details">×</button></div><div id="metricModalContent" class="metric-modal-content"></div></section></div>
+	<div class="dashboard-insights-grid">
+		<section class="dashboard-card trend-card"><div class="card-heading"><div><h2>Transformation Trends</h2><p>Daily transformation activity</p></div><span class="chart-period">7 Days</span></div><div class="dashboard-trend-chart"><div class="trend-y-axis"><span>8</span><span>6</span><span>4</span><span>2</span><span>0</span></div><svg class="activity-chart" viewBox="0 0 700 190" preserveAspectRatio="none" role="img" aria-label="Daily transformation activity for the current week"><path class="dashboard-chart-grid" d="M0 18H700M0 56H700M0 94H700M0 132H700M0 170H700"/><path id="activityArea" d="M0 170 L0 170 L700 170 Z"/><path id="activityLine" d="M0 170 L700 170"/><g id="activityPoints"></g></svg></div><div class="chart-x-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></section>
+		<section class="dashboard-card distribution-card"><div class="card-heading"><div><h2>Content Type Distribution</h2><p>By completed output</p></div></div><div class="distribution-content"><div id="contentDonut" class="content-donut"><div><strong id="distributionTotal">0</strong><span>Total</span></div></div><div id="contentLegend" class="content-legend"></div></div></section>
+		<section class="dashboard-card quick-actions-card"><div class="card-heading"><div><h2>AI Quick Actions</h2><p>Start a common task</p></div></div><div class="quick-actions-grid"><button type="button" data-quick-option="professional"><span class="quick-action-icon violet">✎</span><strong>Text Transform</strong><small>Rewrite, improve</small></button><button type="button" data-quick-option="translate"><span class="quick-action-icon green">文</span><strong>Translate</strong><small>30+ languages</small></button><button type="button" data-quick-option="social"><span class="quick-action-icon amber">◇</span><strong>Social Post</strong><small>Create engaging posts</small></button><button type="button" data-quick-option="summary"><span class="quick-action-icon blue">▤</span><strong>Summarize</strong><small>Extract key points</small></button></div></section>
+	</div>
+	<div class="dashboard-bottom-grid">
+		<section class="dashboard-card recent-card"><div class="card-heading"><div><h2>Recent Transformations</h2><p>Your latest completed tasks</p></div><button id="dashboardViewAllButton" class="text-button" type="button">View All →</button></div><div class="recent-table-wrap"><table><thead><tr><th>TYPE</th><th>DETAIL</th><th>STATUS</th><th>WHEN</th><th>ACTIONS</th></tr></thead><tbody id="recentRows"><tr class="empty-row"><td colspan="5">No transformations yet. Create your first piece of content.</td></tr></tbody></table></div></section>
+		<section class="dashboard-card recommendations-card"><div class="card-heading"><div><h2><span class="bulb-icon">♧</span> AI Recommendations</h2><span class="recommendation-count">2 New</span></div></div><button class="recommendation-item" data-quick-option="social" type="button"><span class="recommendation-symbol">↗</span><span><strong>Boost your social media engagement</strong><small>Use a stronger opening hook and relevant hashtags.</small></span><b>›</b></button><button class="recommendation-item" data-quick-option="translate" type="button"><span class="recommendation-symbol blue">◎</span><span><strong>Create multilingual content</strong><small>Repurpose your existing content in other languages.</small></span><b>›</b></button></section>
+	</div>
+</section><section id="historyView" class="view-panel" hidden>
+			<div class="view-heading"><div><h1>History</h1><p>Review recent work, continue drafts, or restore deleted items.</p></div></div>
+			<div class="history-tabs" role="tablist" aria-label="History categories">
+				<button class="history-tab active" type="button" role="tab" aria-selected="true" data-history-tab="recent">Recents <span id="recentCount">0</span></button>
+				<button class="history-tab" type="button" role="tab" aria-selected="false" data-history-tab="incomplete">Incomplete <span id="incompleteCount">0</span></button>
+				<button class="history-tab" type="button" role="tab" aria-selected="false" data-history-tab="deleted">Deleted <span id="deletedCount">0</span></button>
+			</div>
+			<section class="dashboard-card history-card"><div class="recent-table-wrap"><table><thead><tr><th>TYPE</th><th>DETAIL</th><th>STATUS</th><th>UPDATED</th><th>ACTIONS</th></tr></thead><tbody id="historyRows"></tbody></table></div></section>
+		</section>
+		<section id="aiAgentView" class="view-panel chat-view" hidden>
+			<div class="view-heading"><div><h1>AI Agent</h1><p>Ask a question, explore an idea, or get help with a general topic.</p></div></div>
+			<section class="assistant-chat-card" aria-label="AI Agent chat">
+				<div id="chatMessages" class="chat-messages" role="log" aria-live="polite"><div class="chat-message assistant-message"><strong>AI Agent</strong><p>Hi! What would you like to know?</p></div></div>
+				<form id="assistantChatForm" class="assistant-chat-form"><textarea id="chatInput" rows="2" maxlength="2000" placeholder="Ask me anything..." aria-label="Your question" required></textarea><button id="chatSendButton" type="submit" aria-label="Send message">Send <span aria-hidden="true">➤</span></button></form>
+				<p id="chatStatus" class="chat-status" role="status" aria-live="polite"></p>
+			</section>
+		</section>
+		<section id="analyticsView" class="view-panel" hidden>
+			<div class="view-heading"><div><h1>Analytics &amp; Insights</h1><p>See how your workspace activity changes through the week.</p></div></div>
+			<section class="dashboard-card analytics-chart-card"><div class="analytics-chart-heading"><h2>Weekly activity</h2><span>This week</span></div><div class="weekly-chart"><div id="weeklyYAxis" class="weekly-y-axis" aria-hidden="true"></div><div id="weeklyBars" class="weekly-bars" role="img" aria-label="Weekly transformation activity"></div></div></section>
+		</section>
+		<section id="transformerView" class="view-panel" hidden>
+			<div class="view-heading"><div><h1>Content Generate</h1><p>Craft tailored content in an instant.</p></div><button id="newContentButton" class="primary-small" type="button">＋ Create Content</button></div>
+		<section id="adminPanel" class="admin-panel" hidden>
+			<h2>Create a user account</h2>
+			<form id="createUserForm" class="create-user-form">
+				<div><label for="newUsername">Username</label><input id="newUsername" name="username" minlength="3" maxlength="32" required></div>
+				<div><label for="newPassword">Password</label><input id="newPassword" name="password" type="password" maxlength="8" required></div>
+				<button type="submit">Create user</button>
+			</form>
+			<p id="createUserMessage" class="message" role="status"></p>
+			<button id="closeAdminPanel" class="secondary" type="button">Close</button>
+		</section>
+			<section class="generate-card" aria-labelledby="generateHeading">
+				<h2 id="generateHeading">What content would you like to create?</h2>
+				<div class="generate-prompt"><label class="prompt-upload-tile" for="sourceFile" title="Upload a file to extract content"><span aria-hidden="true">↑</span><small>Upload</small></label><input id="sourceFile" class="upload-file-input" type="file" accept="image/png,image/jpeg,image/webp,video/mp4,video/quicktime,video/webm,video/x-matroska,video/x-msvideo,.mp4,.mov,.webm,.mkv,.avi,.m4v,application/pdf,.docx,.txt,.md,.csv,audio/wav,.wav"><textarea id="inputText" aria-label="Describe the content to create" placeholder="Describe the specific writing task"></textarea></div>
+				<div class="prompt-upload-feedback"><span id="uploadFileName">PNG, JPG, PDF, DOCX, TXT, audio &amp; video</span><button id="uploadFileButton" class="secondary" type="button" hidden>Extract content</button><button id="saveDraftButton" class="secondary" type="button">Save draft</button></div><p id="draftMessage" class="message draft-prompt-message" role="status" aria-live="polite"></p>
+				<p id="uploadMessage" class="message prompt-upload-message" role="status" aria-live="polite"></p>
+				<div class="content-categories" aria-label="Choose a transformation">
+					<section class="category-group"><h3>General</h3><div class="category-options"><button type="button" data-prompt-option="professional">Professional</button><button type="button" data-prompt-option="impressive">Impressive</button><button type="button" data-prompt-option="simple">Simple English</button><button type="button" data-prompt-option="bullets">Bullet points</button><button type="button" data-prompt-option="summary">Summary</button><button type="button" data-prompt-option="quiz">Quiz</button></div></section>
+					<section class="category-group social-category"><button class="category-heading-button" type="button" data-social-toggle>Social media</button><div class="category-options"><button type="button" data-social-format="post">Social post</button><button type="button" data-social-format="caption">Caption</button><button type="button" data-social-format="thread">Thread</button><button type="button" data-social-format="video_script">Video script</button><button type="button" data-social-format="carousel">Carousel</button></div>
+						<section id="socialOptions" class="social-options social-wizard" hidden aria-label="Social content setup">
+	<div class="wizard-heading"><div><span id="socialStepLabel">Step 1 of 2</span><strong id="socialStepProgress">50% completed</strong></div><div class="wizard-progress" aria-hidden="true"><i></i><i></i></div></div>
+	<section class="social-wizard-step" data-social-step="1"><h3>Choose your social platform</h3><div class="platform-choice-grid">
+		<button type="button" data-platform-choice="LinkedIn"><span aria-hidden="true">in</span>LinkedIn</button><button type="button" data-platform-choice="Instagram"><span aria-hidden="true">◎</span>Instagram</button><button type="button" data-platform-choice="Facebook"><span aria-hidden="true">f</span>Facebook</button><button type="button" data-platform-choice="Threads"><span aria-hidden="true">@</span>Threads</button><button type="button" data-platform-choice="X"><span aria-hidden="true">𝕏</span>X (Twitter)</button><button type="button" data-platform-choice="Other"><span aria-hidden="true">◎</span>Other</button>
+	</div><div class="wizard-actions"><button class="wizard-back" type="button" disabled>Back</button><button id="socialContinueStep1" class="wizard-next" type="button">Continue <span aria-hidden="true">→</span></button></div></section>
+	<section class="social-wizard-step" data-social-step="2" hidden>
+	<h3>02. Writing Preferences</h3>
+	<div class="writing-preferences-grid">
+		<div><label for="tone">Tone</label><select id="tone"><option value="friendly">Friendly</option><option value="professional">Professional</option><option value="inspirational">Inspirational</option><option value="witty">Witty</option><option value="casual">Casual</option><option value="educational">Educational</option><option value="persuasive">Persuasive</option></select></div>
+		<div><label for="socialFormat">Content format</label><select id="socialFormat"><option value="post">Standard post</option><option value="caption">Short caption</option><option value="thread">Multi-part thread</option><option value="video_script">Short video script</option><option value="carousel">Carousel outline</option></select></div>
+		<div><label for="audience">Target audience</label><input id="audience" maxlength="100" placeholder="e.g. Entrepreneurs"></div>
+		<div><label for="postLength">Post length</label><select id="postLength"><option value="concise">Concise</option><option value="balanced" selected>Balanced</option><option value="detailed">Detailed</option></select></div>
+	</div>
+	<h3 class="additional-options-heading">03. Additional Options</h3>
+	<div class="additional-options"><label class="checkbox-option"><input id="includeHashtags" type="checkbox" checked> Include relevant hashtags</label><label class="checkbox-option"><input id="includeCta" type="checkbox" checked> Include a call to action</label><label class="checkbox-option"><input id="includeEmoji" type="checkbox"> Include emojis</label></div>
+	<div class="wizard-actions preference-actions"><button class="wizard-back" data-social-back="1" type="button">Back</button><button id="socialWizardDone" class="social-generate-button" type="button"><span aria-hidden="true">✧</span> Generate Social Post</button></div>
+</section>
+	<select id="platform" class="visually-hidden" aria-hidden="true" tabindex="-1"><option value="LinkedIn">LinkedIn</option><option value="Instagram">Instagram</option><option value="X">X</option><option value="Facebook">Facebook</option><option value="TikTok">TikTok</option><option value="YouTube">YouTube</option><option value="Threads">Threads</option><option value="Pinterest">Pinterest</option><option value="Other">Other</option></select>
+	
+</section>
+					</section>
+					<section class="category-group"><h3>Blog</h3><div class="category-options"><button type="button" data-prompt-option="blog_outline">Blog outline</button><button type="button" data-prompt-option="blog_intro">Introduction</button><button type="button" data-prompt-option="blog_article">Full article</button><button type="button" data-prompt-option="blog_seo">SEO rewrite</button></div></section>
+					<section class="category-group"><h3>Marketing</h3><div class="category-options"><button type="button" data-prompt-option="marketing_copy">Marketing copy</button><button type="button" data-prompt-option="ad_copy">Ad copy</button><button type="button" data-prompt-option="product_description">Product description</button><button type="button" data-prompt-option="email_campaign">Marketing email</button></div></section>
+				</div>
+				<button id="transformButton" class="generate-action" type="button">✧ Generate</button>
+			</section>
+			<section class="language-card" aria-labelledby="languageHeading"><div><h2 id="languageHeading">Language transformation</h2><p>Translate content into another language.</p></div><div class="language-controls"><label for="targetLanguage">Translate to</label><select id="targetLanguage"><option>Arabic</option><option>Bengali</option><option>Chinese (Simplified)</option><option>Chinese (Traditional)</option><option>English</option><option>French</option><option>German</option><option>Hindi</option><option>Italian</option><option>Japanese</option><option>Korean</option><option>Portuguese</option><option>Russian</option><option>Spanish</option><option>Assamese</option><option>Bodo</option><option>Dogri</option><option>Kashmiri</option><option>Konkani</option><option>Maithili</option><option>Manipuri (Meitei)</option><option>Marathi</option><option>Nepali</option><option>Odia</option><option>Punjabi</option><option>Sanskrit</option><option>Santali</option><option>Sindhi</option><option>Tamil</option><option>Telugu</option><option>Urdu</option></select><button id="translateButton" type="button">Translate</button><button id="speakTranslatedButton" class="secondary" type="button">Translate &amp; speak</button><button id="stopSpeechButton" class="secondary" type="button" disabled>Stop</button></div><p id="speechMessage" class="message" role="status" aria-live="polite"></p></section>
+			<select id="option" class="visually-hidden" aria-hidden="true" tabindex="-1">
+				<option value="summary">Summarize</option><option value="simple">Simple English</option><option value="professional">Professional</option><option value="impressive">Impressive</option><option value="bullets">Bullet Points</option><option value="social">Social media post</option><option value="quiz">Create a quiz</option><option value="blog_outline">Blog outline</option><option value="blog_intro">Blog introduction</option><option value="blog_article">Blog article</option><option value="blog_seo">Blog SEO rewrite</option><option value="marketing_copy">Marketing copy</option><option value="ad_copy">Ad copy</option><option value="product_description">Product description</option><option value="email_campaign">Marketing email</option>
+			</select>
+			<section id="quizOptions" class="social-options category-social-options" hidden aria-label="Quiz settings"><h3>Quiz length</h3><label for="quizLength">Choose quiz size</label><select id="quizLength"><option value="5">Short quiz (5 questions)</option><option value="10">Medium quiz (10 questions)</option><option value="15">Long quiz (15 questions)</option></select><p class="upload-help">Answer interactive multiple-choice questions, then see your score and explanations.</p></section>
+		<h2>Transformed output</h2>
+		<div id="output" aria-live="polite">Your output will appear here.</div>
+		<div class="output-actions" aria-label="Output actions">
+			<button id="editOutputButton" class="secondary" type="button" disabled>Edit</button>
+			<button id="saveOutputEditButton" class="secondary" type="button" hidden>Save edit</button>
+			<button id="cancelOutputEditButton" class="secondary" type="button" hidden>Cancel edit</button>
+			<button id="copyOutputButton" class="output-icon-button" type="button" aria-label="Copy output" title="Copy" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg></button>
+			<button id="retryOutputButton" class="output-icon-button" type="button" aria-label="Retry transformation" title="Retry" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5"></path><path d="M19 12a7 7 0 1 1-2-5l3 5"></path></svg></button>
+			<button id="downloadOutputButton" class="output-icon-button" type="button" aria-label="Download output" title="Download" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 20h14"></path></svg></button>
+		</div>
+		<p id="approvalMessage" class="message" role="status" aria-live="polite"></p>
+		<section class="dashboard-card generate-latest"><div class="card-heading"><div><h2>My Latest Content <span id="generateCount" class="count-label">(0)</span></h2><p>Your recent transformations and translations</p></div><div class="table-filters"><select id="generateTypeFilter" aria-label="Filter by type"><option value="all">All content</option><option value="General">General</option><option value="Social media">Social media</option><option value="Blog">Blog</option><option value="Marketing">Marketing</option><option value="Translation">Translation</option></select><select id="generateStatusFilter" aria-label="Filter by status"><option value="all">All statuses</option><option value="Completed">Completed</option><option value="Approved">Approved</option></select></div></div><div class="recent-table-wrap"><table><thead><tr><th><input id="selectAllContent" type="checkbox" aria-label="Select all content"></th><th>Name Content</th><th>Content type</th><th>Create date</th><th>Last modified</th><th>Status</th><th></th></tr></thead><tbody id="generateRows"></tbody></table></div></section>
+	</section>
+		</section>
+		</div>
+		</div>
+	</section>
+</main>
+	<script src="script.js?v=27"></script>
+</body>
+</html>
